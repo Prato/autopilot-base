@@ -1,5 +1,8 @@
 FROM alpine:3.4
 
+ARG DOCKER_REPO_VER
+ENV DOCKER_REPO_VER=${DOCKER_REPO_VER}
+
 RUN apk update; apk add --upgrade \
         curl \
         tar \
