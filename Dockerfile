@@ -6,7 +6,7 @@ ENV DOCKER_REPO_VER=${DOCKER_REPO_VER}
 RUN apk update; apk add --upgrade \
         curl \
         tar \
-        unzip \
+        unzip
 
 # Add Consul from https://releases.hashicorp.com/consul
 ENV CONSUL_VER=0.6.4
