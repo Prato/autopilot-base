@@ -1,0 +1,19 @@
+version: '2'
+
+# local compose file uses version 2 syntax to use docker DNS
+
+services:
+  autopilot:
+    build: .
+    env_file: _env
+    restart: always
+    mem_limit: 128m
+    environment:
+      - BACKEND=example
+      - CONSUL=consul
+      - CONSUL_AGENT=1
+      - CONTAINERPILOT=file:///etc/containerpilot/containerpilot.json
+    command: >
+      /usr/local/bin/containerpilot
+      -config file:///etc/containerpilot/containerpilot.json
+      /bin/sh
