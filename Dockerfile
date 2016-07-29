@@ -6,7 +6,8 @@ ENV DOCKER_REPO_VER=${DOCKER_REPO_VER}
 RUN apk update; apk add --upgrade \
         curl \
         tar \
-        unzip
+        unzip \
+        ca-certificates
 
 # Add Consul from https://releases.hashicorp.com/consul
 ENV CONSUL_VER=0.6.4
@@ -34,7 +35,7 @@ RUN curl --retry 7 -Lso /tmp/consul-webui.zip \
         "https://releases.hashicorp.com/consul/${CONSUL_VER}/consul_${CONSUL_VER}_web_ui.zip" \
   && echo "${CONSUL_WEB_CHECKSUM}  /tmp/consul-webui.zip" | sha256sum -c \
   && mkdir /ui && unzip /tmp/consul-webui.zip -d /ui \
-  && rm /tmp/webui.zip
+  && rm /tmp/consul-webui.zip
 
 # Add Containerpilot and set its configuration
 ENV CONTAINERPILOT_VER=2.3.0
