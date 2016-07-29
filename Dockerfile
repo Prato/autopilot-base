@@ -44,4 +44,4 @@ RUN curl --retry 7 -Lso /tmp/containerpilot.tar.gz \
 COPY etc /etc
 COPY bin /usr/local/bin
 
-CMD /bin/sh
+# CMD /bin/sh
