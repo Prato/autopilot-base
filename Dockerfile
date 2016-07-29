@@ -50,4 +50,6 @@ RUN curl --retry 7 -Lso /tmp/containerpilot.tar.gz \
 COPY etc /etc
 COPY bin /usr/local/bin
 
+# EXPOSE 8300 8301 8301/udp 8302 8302/udp 8400 8500 53 53/udp
+
 CMD /bin/sh
