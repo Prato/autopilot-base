@@ -1,3 +1,5 @@
+# Configuration-free base from which to build
+
 FROM alpine:3.4
 
 ARG DOCKER_REPO_VER
@@ -40,17 +42,17 @@ RUN curl --retry 7 -Lso /tmp/consul-webui.zip \
 # Add Containerpilot and set its configuration
 ENV CONTAINERPILOT_VER=2.3.0
 ENV CONTAINERPILOT_CHECKSUM=0b2dc36172248d0df3b73ad67c3262ed49096e6c1204e2325b3fd7529617f130
-ENV CONTAINERPILOT=file:///etc/containerpilot/containerpilot.json
+# ENV CONTAINERPILOT=file:///etc/containerpilot/containerpilot.json
 RUN curl --retry 7 -Lso /tmp/containerpilot.tar.gz \
         "https://github.com/joyent/containerpilot/releases/download/${CONTAINERPILOT_VER}/containerpilot-${CONTAINERPILOT_VER}.tar.gz" \
   && echo "${CONTAINERPILOT_CHECKSUM}  /tmp/containerpilot.tar.gz" | sha256sum -c \
   && tar xzf /tmp/containerpilot.tar.gz -C /usr/local/bin \
   && rm /tmp/containerpilot.tar.gz
 
-# Add our configuration files and scripts
-COPY etc /etc
-COPY bin /usr/local/bin
+# DON'T Add our configuration files and scripts
+# COPY etc /etc
+# COPY bin /usr/local/bin
 
 # EXPOSE 8300 8301 8301/udp 8302 8302/udp 8400 8500 53 53/udp
 
-CMD /bin/sh
+# CMD /bin/sh
