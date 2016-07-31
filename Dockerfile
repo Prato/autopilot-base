@@ -1,5 +1,4 @@
 # Configuration-free base from which to build
-
 FROM alpine:3.4
 
 ARG DOCKER_REPO_VER
@@ -11,7 +10,7 @@ RUN apk update; apk add --upgrade \
         unzip \
         ca-certificates
 
-# Add Consul from https://releases.hashicorp.com/consul
+# Add Consul
 ENV CONSUL_VER=0.6.4
 ENV CONSUL_CHECKSUM=abdf0e1856292468e2c9971420d73b805e93888e006c76324ae39416edcf0627
 RUN curl --retry 7 -Lso /tmp/consul.zip \
@@ -20,7 +19,7 @@ RUN curl --retry 7 -Lso /tmp/consul.zip \
   && unzip /tmp/consul -d /usr/local/bin \
   && rm /tmp/consul.zip \
   && mkdir /config
-# TODO change /config to /etc/consul
+# TODO change /config to /usr/local/etc/consul/config
 
 # Add Consul template
 ENV CONSUL_TEMPLATE_VER=0.14.0
@@ -49,10 +48,6 @@ RUN curl --retry 7 -Lso /tmp/containerpilot.tar.gz \
   && tar xzf /tmp/containerpilot.tar.gz -C /usr/local/bin \
   && rm /tmp/containerpilot.tar.gz
 
-# DON'T Add our configuration files and scripts
-# COPY etc /etc
-# COPY bin /usr/local/bin
+RUN mkdir /usr/local/app /usr/local/etc
 
-# EXPOSE 8300 8301 8301/udp 8302 8302/udp 8400 8500 53 53/udp
-
-# CMD /bin/sh
+# mount Manta next

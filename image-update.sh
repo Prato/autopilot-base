@@ -2,6 +2,8 @@
 #
 # use this script to update, version, & push the container
 #
+# mac: ln -s /usr/local/bin/gsort /usr/local/bin/sort
+#   assuming path prefers usr
 # be sure the following vars are defined in the run environment:
 #
 # GIT_USER=
@@ -26,7 +28,6 @@ GIT_REPO_URL_SUFFIX=$GITHUB_REPO_SUFFIX
 
 GIT_REPO_VER=`curl ${GIT_REPO_URL_PREFIX}/${GIT_USER}/${GIT_REPO_NAME}/${GIT_REPO_URL_SUFFIX} \
                   | json -a name | grep -o '\d\+.\d\+.\d\+' | uniq | sort | tail -1`
-                  # not on mac: --version-sort` #
 # get checksum from CI server when possible
 echo "Building container for $GIT_REPO_NAME version $GIT_REPO_VER"
 
