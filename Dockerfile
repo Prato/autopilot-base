@@ -40,6 +40,7 @@ RUN curl --retry 7 -Lso /tmp/consul-webui.zip \
 # Add Containerpilot and set its configuration
 ENV CONTAINERPILOT_VER=2.3.0
 ENV CONTAINERPILOT_CHECKSUM=0b2dc36172248d0df3b73ad67c3262ed49096e6c1204e2325b3fd7529617f130
+ENV CONTAINERPILOT=file:///etc/containerpilot/containerpilot.json
 RUN curl --retry 7 -Lso /tmp/containerpilot.tar.gz \
         "https://github.com/joyent/containerpilot/releases/download/${CONTAINERPILOT_VER}/containerpilot-${CONTAINERPILOT_VER}.tar.gz" \
   && echo "${CONTAINERPILOT_CHECKSUM}  /tmp/containerpilot.tar.gz" | sha256sum -c \

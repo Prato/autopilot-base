@@ -2,13 +2,12 @@
 # http://autopilotpattern.io/
 
 autopilot:
-    image: prato/autopilot-base
+    image: prato/autopilot-base:0.1.7
     labels:
       - triton.cns.services=autopilot
     mem_limit: 128m
     restart: always
-    env_file:
-      - _env
+    env_file: _env
     command: >
       /bin/containerpilot
       -config file:///etc/containerpilot/containerpilot.json
