@@ -8,7 +8,7 @@ Version 0.1.2
 Key     | Description
 --------|------------
 builds  | [prato/autopilot-base](https://hub.docker.com/r/prato/autopilot-base/ "Docker Hub")
-webhook | are triggered by webhook upon push, named for version string, minus the 'v'.
+webhook | triggered upon push, named for version string, minus the 'v'.
 regex   | /^v([0-9.]+)$/
 tag     | {\1}
 doc     | [Joyent](https://www.joyent.com/blog/applications-on-autopilot "Tim Gross")
