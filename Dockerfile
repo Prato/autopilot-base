@@ -1,4 +1,5 @@
-FROM alpine:edge
+# Configuration-free base from which to build
+FROM gliderlabs/alpine:3.4
 
 ARG DOCKER_REPO_VER
 ENV DOCKER_REPO_VER=${DOCKER_REPO_VER}
@@ -9,7 +10,7 @@ RUN apk update; apk add --upgrade \
         unzip \
         ca-certificates
 
-# Add Consul from https://releases.hashicorp.com/consul
+# Add Consul
 ENV CONSUL_VER=0.6.4
 ENV CONSUL_CHECKSUM=abdf0e1856292468e2c9971420d73b805e93888e006c76324ae39416edcf0627
 RUN curl --retry 7 -Lso /tmp/consul.zip \
@@ -18,7 +19,7 @@ RUN curl --retry 7 -Lso /tmp/consul.zip \
   && unzip /tmp/consul -d /usr/local/bin \
   && rm /tmp/consul.zip \
   && mkdir /config
-# TODO change /config to /etc/consul
+# TODO change /config to /usr/local/etc/consul/config
 
 # Add Consul template
 ENV CONSUL_TEMPLATE_VER=0.14.0
@@ -40,14 +41,13 @@ RUN curl --retry 7 -Lso /tmp/consul-webui.zip \
 # Add Containerpilot and set its configuration
 ENV CONTAINERPILOT_VER=2.3.0
 ENV CONTAINERPILOT_CHECKSUM=0b2dc36172248d0df3b73ad67c3262ed49096e6c1204e2325b3fd7529617f130
+# ENV CONTAINERPILOT=file:///etc/containerpilot/containerpilot.json
 RUN curl --retry 7 -Lso /tmp/containerpilot.tar.gz \
         "https://github.com/joyent/containerpilot/releases/download/${CONTAINERPILOT_VER}/containerpilot-${CONTAINERPILOT_VER}.tar.gz" \
   && echo "${CONTAINERPILOT_CHECKSUM}  /tmp/containerpilot.tar.gz" | sha256sum -c \
   && tar xzf /tmp/containerpilot.tar.gz -C /usr/local/bin \
   && rm /tmp/containerpilot.tar.gz
 
-# Add our configuration files and scripts
-COPY etc /etc
-COPY bin /usr/local/bin
+RUN mkdir /usr/local/app /usr/local/etc
 
-CMD /bin/sh
+# mount Manta next
