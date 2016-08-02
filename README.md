@@ -18,12 +18,11 @@ doc     | [Joyent](https://www.joyent.com/blog/applications-on-autopilot "Tim Gr
 ```bash
 # needs scipting
 git add .
-git commit -am "trigger build"
+git commit -m "trigger build"
 git tag
 git tag vx.y.z
-git push --follow-tags
-# or just set push.followTags first:
-git config --local push.followTags true
+git push && push --tags
+# not working git v2.9.2: git config --local push.followTags true
 ```
 ## Configuration
 ```bash
