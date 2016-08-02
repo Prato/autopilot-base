@@ -1,6 +1,8 @@
 # Configuration-free base from which to build
 FROM gliderlabs/alpine:3.4
 
+ENV LANG=C.UTF-8
+
 ARG DOCKER_REPO_VER
 ENV DOCKER_REPO_VER=${DOCKER_REPO_VER}
 
@@ -10,7 +12,40 @@ RUN apk update; apk add --upgrade \
         unzip \
         ca-certificates
 
-# Add Consul
+# Here we install GNU libc (aka glibc) and set C.UTF-8 locale as default.
+
+RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" && \
+    ALPINE_GLIBC_PACKAGE_VERSION="2.23-r3" && \
+    ALPINE_GLIBC_BASE_PACKAGE_FILENAME="glibc-$ALPINE_GLIBC_PACKAGE_VERSION.apk" && \
+    ALPINE_GLIBC_BIN_PACKAGE_FILENAME="glibc-bin-$ALPINE_GLIBC_PACKAGE_VERSION.apk" && \
+    ALPINE_GLIBC_I18N_PACKAGE_FILENAME="glibc-i18n-$ALPINE_GLIBC_PACKAGE_VERSION.apk" && \
+    apk add --no-cache --virtual=.build-dependencies wget ca-certificates && \
+    wget \
+        "https://raw.githubusercontent.com/andyshinn/alpine-pkg-glibc/master/sgerrand.rsa.pub" \
+        -O "/etc/apk/keys/sgerrand.rsa.pub" && \
+    wget \
+        "$ALPINE_GLIBC_BASE_URL/$ALPINE_GLIBC_PACKAGE_VERSION/$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" \
+        "$ALPINE_GLIBC_BASE_URL/$ALPINE_GLIBC_PACKAGE_VERSION/$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
+        "$ALPINE_GLIBC_BASE_URL/$ALPINE_GLIBC_PACKAGE_VERSION/$ALPINE_GLIBC_I18N_PACKAGE_FILENAME" && \
+    apk add --no-cache \
+        "$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" \
+        "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
+        "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME" && \
+    \
+    rm "/etc/apk/keys/sgerrand.rsa.pub" && \
+    /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 C.UTF-8 || true && \
+    echo "export LANG=C.UTF-8" > /etc/profile.d/locale.sh && \
+    \
+    apk del glibc-i18n && \
+    \
+    rm "/root/.wget-hsts" && \
+    apk del .build-dependencies && \
+    rm \
+        "$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" \
+        "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
+        "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME"
+
+# Add Consul from https://releases.hashicorp.com/consul
 ENV CONSUL_VER=0.6.4
 ENV CONSUL_CHECKSUM=abdf0e1856292468e2c9971420d73b805e93888e006c76324ae39416edcf0627
 RUN curl --retry 7 -Lso /tmp/consul.zip \
@@ -19,7 +54,7 @@ RUN curl --retry 7 -Lso /tmp/consul.zip \
   && unzip /tmp/consul -d /usr/local/bin \
   && rm /tmp/consul.zip \
   && mkdir /config
-# TODO change /config to /usr/local/etc/consul/config
+# TODO change /config to /etc/consul
 
 # Add Consul template
 ENV CONSUL_TEMPLATE_VER=0.14.0
@@ -48,6 +83,10 @@ RUN curl --retry 7 -Lso /tmp/containerpilot.tar.gz \
   && tar xzf /tmp/containerpilot.tar.gz -C /usr/local/bin \
   && rm /tmp/containerpilot.tar.gz
 
-RUN mkdir /usr/local/app /usr/local/etc
+# DON'T Add our configuration files and scripts
+# COPY etc /etc
+# COPY bin /usr/local/bin
 
-# mount Manta next
+# EXPOSE 8300 8301 8301/udp 8302 8302/udp 8400 8500 53 53/udp
+
+# CMD /bin/sh
