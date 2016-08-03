@@ -5,6 +5,7 @@ ARG DOCKER_REPO_VER
 ENV DOCKER_REPO_VER=${DOCKER_REPO_VER}
 
 RUN apk update; apk add --upgrade \
+        bash \
         curl \
         tar \
         unzip \
