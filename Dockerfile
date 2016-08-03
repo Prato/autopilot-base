@@ -1,5 +1,4 @@
 # Configuration-free base from which to build
-
 FROM alpine:3.4
 
 ARG DOCKER_REPO_VER
