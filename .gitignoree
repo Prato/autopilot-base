@@ -92,4 +92,4 @@ tramp
 /auto/
 
 # cask packages
-.cask
+***.cask
